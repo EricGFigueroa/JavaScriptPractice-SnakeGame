@@ -16,13 +16,14 @@ $(document).ready(function() {
     // Speed
     var speed = 130;
     // Color
-    var color = "green";
+    var color = "red";
     // Snake Array
     var snakeArray;
 
     // Initializer
     function init() {
 
+        d = "right";
         createSnake();
         createFood();
         score = 0;
@@ -87,10 +88,17 @@ $(document).ready(function() {
             ny++;
         }
 
-        // Collision Detection Code
+        // Collision Code
         if (nx == -1 || nx == w / cw || ny == -1 || ny == h / cw || checkCollision(nx, ny, snakeArray)) {
 
-            init();
+            // init();
+
+            // Insert Final score
+            $("#final-score").html(score);
+
+            // Show Overlay
+            $("#overlay").fadeIn(300);
+
             return;
 
         };
@@ -128,35 +136,79 @@ $(document).ready(function() {
         paintCell(food.x, food.y);
 
         // Check Score
-        // checkScore(score);
+        checkScore(score);
 
-        function paintCell(x, y) {
+        // Display Current Score
+        $("#score").html("Your Score: " + score);
 
-            ctx.fillStyle = color;
-            ctx.fillRect(x * cw, y * cw, cw, cw);
-            ctx.strokeStyle = "#fff";
-            ctx.strokeRect(x * cw, y * cw, cw, cw);
+    };
 
-        };
+    function paintCell(x, y) {
 
-        function checkCollision(x, y, array) {
+        ctx.fillStyle = color;
+        ctx.fillRect(x * cw, y * cw, cw, cw);
+        ctx.strokeStyle = "#fff";
+        ctx.strokeRect(x * cw, y * cw, cw, cw);
 
-            for (var i = 0; i < array.length; i++) {
+    };
 
-                if (array[i.x == x && array[i].y == y]) {
+    function checkCollision(x, y, array) {
 
-                    return true;
+        for (var i = 0; i < array.length; i++) {
 
-                } else {
+            if (array[i.x == x && array[i].y == y]) {
 
-                    return false;
+                return true;
 
-                };
+            }
 
-            };
+            return false;
 
         };
 
     };
 
+    function checkScore(score) {
+
+        if (localStorage.getItem("high-score") === null) {
+
+            //If There Is No High Score
+            localStorage.setItem("high-score", score);
+
+        } else {
+
+            //If There Is A High Score
+            if (score > localStorage.getItem("high-score")) {
+
+                localStorage.setItem("highScore", score);
+
+            }
+        };
+
+        $("#high-score").html("High Score: " + localStorage.highScore)
+
+    };
+
+    // Keyboard Controller
+    $(document).keydown(function(e) {
+
+        var key = e.which;
+
+        if (key == "37" && d != "right") d = "left";
+        else if (key == "38" && d != "down") d = "up";
+        else if (key == "39" && d != "left") d = "right";
+        else if (key == "40" && d != "up") d = "down";
+
+    });
+
 });
+
+function resetScore() {
+
+    localStorage.highScore = 0;
+
+    // Display High Score
+    var highScoreDiv = document.getElementById("high-score");
+    highScoreDiv.innerHTML = "High Score: 0";
+
+}

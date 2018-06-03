@@ -52,7 +52,8 @@ a {
         overflow: auto;
         background-color: #444;
 
-        .score {
+        #high-score,
+        #score {
             width: 25%;
             height: 50px;
             float: left;
